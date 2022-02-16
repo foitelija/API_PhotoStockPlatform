@@ -26,7 +26,13 @@ namespace API_PhotoStockPlatform.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            string query = @"SELECT * FROM author";
+            string query = @"select author.id as 'Author ID',author.name as 'Author Name', 
+            author.nickname as 'Author NickName', author.age as 'Author Age', author.date_reg as 'Author reg date',
+            photo.id as 'Photo ID', photo.name as 'Photo name', photo.link as 'Photo link', photo.size as 'Photo size',
+            photo.date_add as 'Photo add date', photo.price as 'Photo price', photo.boughtOnce as 'Bought' ,
+            text.id as 'Text ID', text.name as 'Text name', text.size as 'Text size', text.date_add as 'Text add date',
+            text.price as 'Text price', text.boughtOnce as 'Bought'
+            from author join photo on photo.author_id = author.id join text on text.author_id = author.id";
 
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("PhotoStockAppCon");
@@ -47,7 +53,6 @@ namespace API_PhotoStockPlatform.Controllers
         }
 
         [HttpPost]
-
         public JsonResult Post(Author author)
         {
             string query = @"INSERT INTO author (name, nickname, age, date_reg) VALUES (@name,@nickname,@age,@date_reg)";
@@ -74,5 +79,8 @@ namespace API_PhotoStockPlatform.Controllers
 
             return new JsonResult("Added successfully");
         }
+
+
+
     }
 }
