@@ -25,7 +25,7 @@ namespace API_PhotoStockPlatform.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            string query = @"SELECT * FROM sauthor";
+            string query = @"SELECT * FROM author";
 
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("PhotoStockAppCon");
