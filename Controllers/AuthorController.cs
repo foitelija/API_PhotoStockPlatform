@@ -43,10 +43,17 @@ namespace API_PhotoStockPlatform.Controllers
                 myCon.Open();
                 using(SqlCommand myCommand = new SqlCommand(query,myCon))
                 {
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
+                    try
+                    {
+                        myReader = myCommand.ExecuteReader();
+                        table.Load(myReader);
+                        myReader.Close();
+                        myCon.Close();
+                    }
+                    catch(Exception ex)
+                    {
+                        return new JsonResult("Upload error, check database connection");
+                    }
                 }    
             }
             return new JsonResult(table);
@@ -66,6 +73,8 @@ namespace API_PhotoStockPlatform.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
+                    try 
+                    { 
                     myCommand.Parameters.AddWithValue("@name", author.name);
                     myCommand.Parameters.AddWithValue("@nickname", author.nickname);
                     myCommand.Parameters.AddWithValue("@age", author.age);
@@ -74,6 +83,12 @@ namespace API_PhotoStockPlatform.Controllers
                     table.Load(myReader);
                     myReader.Close();
                     myCon.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        return new JsonResult("Add error");
+                    }
+
                 }
             }
 
