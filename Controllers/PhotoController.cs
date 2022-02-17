@@ -48,6 +48,39 @@ namespace API_PhotoStockPlatform.Controllers
             return new JsonResult(table);
         }
 
+        [HttpPut]
+        public JsonResult Put(Photo photo)
+        {
+            string query = @"update photo set photo.link =@link, 
+            photo.size=@size, photo.author_id=@author_id, photo.price=@price, 
+            photo.boughtOnce=@boughtOnce, photo.date_add=@date_add, 
+            photo.name=@name where photo.id=@id";
 
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("PhotoStockAppCon");
+            SqlDataReader myReader;
+
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@id", photo.id);
+                    myCommand.Parameters.AddWithValue("@link", photo.link);
+                    myCommand.Parameters.AddWithValue("@size", photo.size);
+                    myCommand.Parameters.AddWithValue("@author_id", photo.author_id);
+                    myCommand.Parameters.AddWithValue("@price", photo.price);
+                    myCommand.Parameters.AddWithValue("@boughtOnce", photo.boughtOnce);
+                    myCommand.Parameters.AddWithValue("@name", photo.name);
+                    myCommand.Parameters.AddWithValue("@date_add", photo.date_add);
+
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+            return new JsonResult("Update succesfully");
+        }
     }
 }
