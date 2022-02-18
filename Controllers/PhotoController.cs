@@ -55,6 +55,40 @@ namespace API_PhotoStockPlatform.Controllers
             }
             return new JsonResult(table);
         }
+        [HttpPost("byId")]
+        public JsonResult Post(Photo search)
+        {
+            string query = @"select author.id as 'author ID', author.nickname as 'Nickname',
+            photo.id as 'Photo id', photo.name as 'Photo name', photo.link as 'Photo link', photo.date_add as 'Photo date add',
+            photo.size as 'Photo size', photo.price as 'Price' from author join photo on photo.author_id = author.id where photo.id = @id";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("PhotoStockAppCon");
+            SqlDataReader myReader;
+
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    try
+                    {
+                        myCommand.Parameters.AddWithValue("@id", search.id);
+                        myReader = myCommand.ExecuteReader();
+                        table.Load(myReader);
+                        myReader.Close();
+                        myCon.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        return new JsonResult("Upload error, check database connection");
+                    }
+
+                }
+            }
+            return new JsonResult(table);
+
+        }
 
         [HttpPut]
         public JsonResult Put(Photo photo)
